@@ -1,0 +1,25 @@
+{
+	"name": "dejector",
+	"description": "D Dependency Injection Framework",
+	"homepage": "https://github.com/jstasiak/dejector",
+	"copyright": "Copyright © 2013, Jakub Stasiak",
+	"authors": [
+		"Jakub Stasiak"
+	],
+	"targetType": "library",
+	"dependencies": {
+		"dunit": "==1.0.2"
+	},
+	"configurations": [
+		{
+			"name": "release"
+		},
+		{
+			"name": "unittest",
+			"targetType": "executable",
+			"dflags-dmd": ["-main"],
+			"dflags-gdc": ["-main"],
+			"dflags-ldc": ["-main"],
+		}
+	]
+}
