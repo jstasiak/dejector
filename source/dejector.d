@@ -3,10 +3,6 @@ import std.stdio : writefln;
 import std.string : chomp;
 import std.traits : fullyQualifiedName, hasMember, ParameterTypeTuple;
 
-interface Module {
-	BindingMap getBindings();
-}
-
 immutable argumentSeparator = ", ";
 
 string generateGet(T)() {
