@@ -8,4 +8,4 @@ install:
   - sudo dpkg -i dmd_2.063.2-0_amd64.deb
   - sudo wget http://code.dlang.org/files/dub-0.9.19-linux-x86_64.tar.gz
   - sudo tar zxvf dub*
-script: PATH=.:$PATH dub --build=unittest --config=unittest
+script: PATH=.:$PATH ./runtests
