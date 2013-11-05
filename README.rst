@@ -18,44 +18,33 @@ Example usage
 
     import dejector : Dejector;
 
-    class A {}
-
-    class B {
-        A a;
-        this(A a) {
-            this.a = a;
-        }
+    interface Greeter {
+        string greet();
     }
 
-    class C {
-        B b;
-        this(B b) {
-            this.b = b;
-        }
+    class GreeterImplementation : Greeter {
+        string greet() { return "Hello!"; }
     }
 
     void main() {
         Dejector dejector;
-        auto c = dejector.get!C;
-        writefln(to!string(c));
-        writefln(to!string(c.b));
-        writefln(to!string(c.b.a));
+        dejector.bind!(Greeter, GreeterImplementation);
+        Greeter greeter = dejector.get!Greeter;
+        writefln(greeter.greet)
     }
 
 Output::
 
-    app.C
-    app.B
-    app.A
+    Hello!
 
 Running tests
 -------------
 
-You need to have `dub <https://github.com/rejectedsoftware/dub>`_ installed.
+You need to have `dub <https://github.com/rejectedsoftware/dub>`_ installed and reacheble from your PATH.
 
 ::
 
-    dub --build=unittest --config=unittest
+    ./runtests
 
 Copyright
 ---------
