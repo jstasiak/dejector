@@ -2,7 +2,6 @@ import std.conv : to;
 import std.stdio : writefln;
 import std.string : chomp;
 import std.traits : fullyQualifiedName, hasMember, ParameterTypeTuple;
-import std.variant : Variant;
 
 immutable argumentSeparator = ", ";
 
@@ -33,7 +32,7 @@ class ClassProvider(T) : Provider {
 }
 
 class Dejector {
-	private Variant[string] bindingMap;
+	private Provider[string] bindingMap;
 
 	void bind(Interface)(Provider provider) {
 		this.bindingMap[fullyQualifiedName!Interface] = provider;
@@ -44,7 +43,7 @@ class Dejector {
 	}
 
 	Interface get(Interface)() {
-		auto provider = this.bindingMap[fullyQualifiedName!Interface].get!Provider;
+		auto provider = this.bindingMap[fullyQualifiedName!Interface];
 		return cast(Interface) provider.get;
 	}
 }
