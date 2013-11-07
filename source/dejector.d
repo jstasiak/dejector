@@ -1,4 +1,5 @@
 import std.conv : to;
+import std.functional : toDelegate;
 import std.stdio : writefln;
 import std.string : chomp;
 import std.traits : fullyQualifiedName, hasMember, ParameterTypeTuple;
@@ -39,6 +40,18 @@ class ClassProvider(T) : Provider {
 	mixin(generateGet!T);
 }
 
+class FunctionProvider : Provider {
+	private Object delegate() provide;
+
+	this(Object delegate() provide) {
+		this.provide = provide;
+	}
+
+	Object get() {
+		return this.provide();
+	}
+}
+
 class Dejector {
 	private Provider[string] bindingMap;
 
@@ -54,8 +67,16 @@ class Dejector {
 		this.bind!Interface(new ClassProvider!Class(this));
 	}
 
+	void bind(Interface)(Object delegate() provide) {
+		this.bind!Interface(new FunctionProvider(provide));
+	}
+
+	void bind(Interface)(Object function() provide) {
+		this.bind!Interface(toDelegate(provide));
+	}
+
 	Interface get(Interface)() {
-		auto provider = this.bindingMap[fullyQualifiedName!Interface];
+		immutable provider = this.bindingMap[fullyQualifiedName!Interface];
 		return cast(Interface) provider.get;
 	}
 }
@@ -63,8 +84,14 @@ class Dejector {
 
 class X {}
 
-unittest {
+class User {
+	string name;
+	this(string name) {
+		this.name = name;
+	}
+}
 
+unittest {
 	interface Greeter {
 		string greet();
 	}
@@ -74,10 +101,15 @@ unittest {
 		string greet() { return "Hello!"; }
 	}
 
+
 	auto dejector = new Dejector;
 	dejector.bind!(X);
 	dejector.bind!(Greeter, GreeterImplementation);
+	dejector.bind!(User)(function() { return new User("root"); });
 
 	auto greeter = dejector.get!Greeter;
 	assert(greeter.greet == "Hello!");
+
+	auto user = dejector.get!User;
+	assert(user.name == "root");
 }
