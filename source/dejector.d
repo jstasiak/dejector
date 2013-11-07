@@ -76,7 +76,7 @@ class Dejector {
 	}
 
 	Interface get(Interface)() {
-		immutable provider = this.bindingMap[fullyQualifiedName!Interface];
+		auto provider = this.bindingMap[fullyQualifiedName!Interface];
 		return cast(Interface) provider.get;
 	}
 }
