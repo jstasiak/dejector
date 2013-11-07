@@ -2,10 +2,10 @@ language: python
 python:
   - "2.7"
 install:
-  - sudo wget http://downloads.dlang.org.s3-website-us-east-1.amazonaws.com/releases/2013/dmd_2.064.2-0_amd64.deb
+  - sudo wget http://netcologne.dl.sourceforge.net/project/d-apt/files/d-apt.list -O /etc/apt/sources.list.d/d-apt.list 
+  - sudo apt-get update
+  - sudo apt-get -y --allow-unauthenticated install --reinstall d-apt-keyring
   - sudo apt-get update
   - sudo apt-get install gcc-multilib
-  - sudo dpkg -i dmd_2.064.2-0_amd64.deb
-  - sudo wget http://code.dlang.org/files/dub-0.9.19-linux-x86_64.tar.gz
-  - sudo tar zxvf dub*
-script: PATH=.:$PATH ./runtests
+  - sudo apt-get install dub
+script: ./runtests
