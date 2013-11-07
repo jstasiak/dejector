@@ -6,6 +6,5 @@ install:
   - sudo apt-get update
   - sudo apt-get -y --allow-unauthenticated install --reinstall d-apt-keyring
   - sudo apt-get update
-  - sudo apt-get install gcc-multilib
-  - sudo apt-get install dub
+  - sudo apt-get install gcc-multilib dub dmd-bin
 script: ./runtests
