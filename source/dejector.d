@@ -3,18 +3,26 @@ import std.stdio : writefln;
 import std.string : chomp;
 import std.traits : fullyQualifiedName, hasMember, ParameterTypeTuple;
 
+
+extern (C) Object _d_newclass(const TypeInfo_Class ci);
+
 immutable argumentSeparator = ", ";
 
 string generateGet(T)() {
 	immutable nameOfT = fullyQualifiedName!T;
-	auto code = "Object get() { return new " ~ nameOfT ~ "(";
+	auto code = "
+		Object get() {
+			auto instance = cast(T) _d_newclass(T.classinfo);";
+
 	static if (hasMember!(T, "__ctor")) {
-		foreach (type; ParameterTypeTuple!(mixin(nameOfT ~ ".__ctor"))) {
+		code ~= "instance.__ctor(";
+		foreach (type; ParameterTypeTuple!(T.__ctor)) {
 			code ~= "this.dej.get!(" ~ fullyQualifiedName!type ~ ")" ~
 				argumentSeparator;
 		}
+		code = chomp(code, argumentSeparator) ~ ");";
 	}
-	code = chomp(code, argumentSeparator) ~ "); }";
+	code ~= "return instance; }";
 	return code;
 }
 
@@ -38,6 +46,10 @@ class Dejector {
 		this.bindingMap[fullyQualifiedName!Interface] = provider;
 	}
 
+	void bind(Class)() {
+		this.bind!(Class, Class);
+	}
+
 	void bind(Interface, Class)() {
 		this.bind!Interface(new ClassProvider!Class(this));
 	}
@@ -48,16 +60,22 @@ class Dejector {
 	}
 }
 
-interface Greeter {
-	string greet();
-}
 
-class GreeterImplementation : Greeter {
-	string greet() { return "Hello!"; }
-}
+class X {}
 
 unittest {
+
+	interface Greeter {
+		string greet();
+	}
+
+	class GreeterImplementation : Greeter {
+		this(X x) {}
+		string greet() { return "Hello!"; }
+	}
+
 	auto dejector = new Dejector;
+	dejector.bind!(X);
 	dejector.bind!(Greeter, GreeterImplementation);
 
 	auto greeter = dejector.get!Greeter;
