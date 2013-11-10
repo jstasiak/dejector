@@ -2,7 +2,7 @@ import std.conv : to;
 import std.functional : toDelegate;
 import std.stdio : writefln;
 import std.string : chomp;
-import std.traits : fullyQualifiedName, hasMember, ParameterTypeTuple;
+import std.traits : fullyQualifiedName, hasMember, moduleName, ParameterTypeTuple;
 
 
 extern (C) Object _d_newclass(const TypeInfo_Class ci);
@@ -15,8 +15,14 @@ string generateGet(T)() {
 		Object get() {
 			auto instance = cast(T) _d_newclass(T.classinfo);";
 
+
 	static if (hasMember!(T, "__ctor")) {
+		foreach (type; ParameterTypeTuple!(T.__ctor)) {
+			code ~= "import " ~ moduleName!type ~ ";";
+		}
+
 		code ~= "instance.__ctor(";
+
 		foreach (type; ParameterTypeTuple!(T.__ctor)) {
 			code ~= "this.dej.get!(" ~ fullyQualifiedName!type ~ ")" ~
 				argumentSeparator;
@@ -79,37 +85,4 @@ class Dejector {
 		auto provider = this.bindingMap[fullyQualifiedName!Interface];
 		return cast(Interface) provider.get;
 	}
-}
-
-
-class X {}
-
-class User {
-	string name;
-	this(string name) {
-		this.name = name;
-	}
-}
-
-unittest {
-	interface Greeter {
-		string greet();
-	}
-
-	class GreeterImplementation : Greeter {
-		this(X x) {}
-		string greet() { return "Hello!"; }
-	}
-
-
-	auto dejector = new Dejector;
-	dejector.bind!(X);
-	dejector.bind!(Greeter, GreeterImplementation);
-	dejector.bind!(User)(function() { return new User("root"); });
-
-	auto greeter = dejector.get!Greeter;
-	assert(greeter.greet == "Hello!");
-
-	auto user = dejector.get!User;
-	assert(user.name == "root");
 }
