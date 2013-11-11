@@ -29,7 +29,7 @@ Example usage
     void main() {
         Dejector dejector;
         dejector.bind!(Greeter, GreeterImplementation);
-        Greeter greeter = dejector.get!Greeter;
+        auto greeter = dejector.get!Greeter;
         writefln(greeter.greet)
     }
 
