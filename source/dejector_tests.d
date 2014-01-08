@@ -1,4 +1,4 @@
-import dejector : Dejector;
+import dejector : Dejector, InstanceProvider, NoScope, Singleton;
 
 version(unittest) {
 	class X {}
@@ -30,5 +30,28 @@ version(unittest) {
 
 		auto user = dejector.get!User;
 		assert(user.name == "root");
+	}
+
+	/// InstanceProvider works
+	unittest {
+		auto dejector = new Dejector;
+		dejector.bind!(User)(new InstanceProvider(new User("Jon")));
+		assert(dejector.get!User.name == "Jon");
+	}
+
+	/// NoScope binding creates new object on every call
+	unittest {
+		auto dejector = new Dejector;
+		dejector.bind!(X, NoScope);
+
+		assert(dejector.get!X() !is dejector.get!X());
+	}
+
+	/// Singleton binding always returns the same object
+	unittest {
+		auto dejector = new Dejector;
+		dejector.bind!(X, Singleton);
+
+		assert(dejector.get!X is dejector.get!X);
 	}
 }

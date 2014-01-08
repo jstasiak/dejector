@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-dub --build=unittest --config=unittest
+dub --verbose --build=unittest --config=unittest
