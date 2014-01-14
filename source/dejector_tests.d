@@ -1,4 +1,4 @@
-import dejector : Dejector, InstanceProvider, NoScope, Singleton;
+import dejector : Dejector, InstanceProvider, Module, NoScope, Singleton;
 
 version(unittest) {
 	class X {}
@@ -20,10 +20,15 @@ version(unittest) {
 	}
 
 	unittest {
-		auto dejector = new Dejector;
-		dejector.bind!(X);
-		dejector.bind!(Greeter, GreeterImplementation);
-		dejector.bind!(User)(function() { return new User("root"); });
+		class MyModule : Module {
+			void configure(Dejector dejector) {
+				dejector.bind!(X);
+				dejector.bind!(Greeter, GreeterImplementation);
+				dejector.bind!(User)(function() { return new User("root"); });
+			}
+		}
+
+		auto dejector = new Dejector([new MyModule()]);
 
 		auto greeter = dejector.get!Greeter;
 		assert(greeter.greet == "Hello!");

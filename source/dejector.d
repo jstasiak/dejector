@@ -104,13 +104,26 @@ class Singleton : Scope {
 }
 
 
+interface Module {
+	void configure(Dejector dejector);
+}
+
+
 class Dejector {
 	private Binding[string] bindings;
 	private Scope[string] scopes;
 
-	this() {
+	this(Module[] modules) {
 		this.bindScope!NoScope;
 		this.bindScope!Singleton;
+
+		foreach(module_; modules) {
+			module_.configure(this);
+		}
+	}
+
+	this() {
+		this([]);
 	}
 
 	void bindScope(Class)() {
