@@ -74,7 +74,7 @@ class InstanceProvider : Provider {
 }
 
 
-struct Binding {
+private struct Binding {
 	string key;
 	Provider provider;
 	Scope scope_;
@@ -113,7 +113,7 @@ class Dejector {
 		this.bindScope!Singleton;
 	}
 
-	public void bindScope(Class)() {
+	void bindScope(Class)() {
 		immutable key = fullyQualifiedName!Class;
 		if(key in this.scopes) {
 			throw new Exception("Scope already bound");
@@ -121,15 +121,15 @@ class Dejector {
 		this.scopes[key] = new Class();
 	}
 
-	public void bind(Class, ScopeClass:Scope = NoScope)() {
+	void bind(Class, ScopeClass:Scope = NoScope)() {
 		this.bind!(Class, Class, ScopeClass);
 	}
 
-	public void bind(Interface, Class, ScopeClass:Scope = NoScope)() {
+	void bind(Interface, Class, ScopeClass:Scope = NoScope)() {
 		this.bind!(Interface, ScopeClass)(new ClassProvider!Class(this));
 	}
 
-	public void bind(Interface, ScopeClass:Scope = NoScope)(Provider provider) {
+	void bind(Interface, ScopeClass:Scope = NoScope)(Provider provider) {
 		immutable key = fullyQualifiedName!Interface;
 		if(key in this.bindings) {
 			throw new Exception("Interface already bound");
@@ -138,15 +138,15 @@ class Dejector {
 		this.bindings[key] = Binding(key, provider, scope_);
 	}
 
-	public void bind(Interface, ScopeClass:Scope = NoScope)(Object delegate() provide) {
+	void bind(Interface, ScopeClass:Scope = NoScope)(Object delegate() provide) {
 		this.bind!(Interface, ScopeClass)(new FunctionProvider(provide));
 	}
 
-	public void bind(Interface, ScopeClass:Scope = NoScope)(Object function() provide) {
+	void bind(Interface, ScopeClass:Scope = NoScope)(Object function() provide) {
 		this.bind!(Interface, ScopeClass)(toDelegate(provide));
 	}
 
-	public Interface get(Interface)() {
+	Interface get(Interface)() {
 		auto binding = this.bindings[fullyQualifiedName!Interface];
 		immutable key = fullyQualifiedName!Interface;
 		return cast(Interface) binding.scope_.get(key, binding.provider);
