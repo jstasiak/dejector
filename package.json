@@ -9,18 +9,6 @@
 	],
 	"targetType": "library",
 	"dependencies": {
-		"dunit": "==1.0.2"
-	},
-	"configurations": [
-		{
-			"name": "release"
-		},
-		{
-			"name": "unittest",
-			"targetType": "executable",
-			"dflags-dmd": ["-main"],
-			"dflags-gdc": ["-main"],
-			"dflags-ldc": ["-main"],
-		}
-	]
+		"dunit": ">=1.0.8"
+	}
 }
