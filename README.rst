@@ -44,7 +44,7 @@ You need to have `dub <https://github.com/rejectedsoftware/dub>`_ installed and 
 
 ::
 
-    ./runtests
+    dub --verbose test
 
 Copyright
 ---------
