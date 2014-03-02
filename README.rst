@@ -40,7 +40,7 @@ Output::
 Running tests
 -------------
 
-You need to have `dub <https://github.com/rejectedsoftware/dub>`_ installed and reacheble from your PATH.
+You need to have `dub <https://github.com/rejectedsoftware/dub>`_ >= 0.9.21 installed and reacheble from your PATH.
 
 ::
 
