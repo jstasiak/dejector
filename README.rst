@@ -6,7 +6,7 @@ dejector
    :target: https://travis-ci.org/jstasiak/dejector
 
 
-This is an attempt to create a dependency injection framework for D and my way of learning the language.
+This is a proof of concept of dependency injection framework for D and my way of learning the language.
 
 Example usage
 -------------
