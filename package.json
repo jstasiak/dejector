@@ -1,6 +1,6 @@
 {
 	"name": "dejector",
-	"description": "D Dependency Injection Framework",
+	"description": "Proof of concept D Dependency Injection Framework",
 	"license": "MIT",
 	"homepage": "https://github.com/jstasiak/dejector",
 	"copyright": "Copyright © 2013, Jakub Stasiak",
